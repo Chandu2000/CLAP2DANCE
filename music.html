@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600&display=swap');
+
+*{
+  font-family: 'Poppins', sans-serif;
+  margin:0; padding:0;
+  box-sizing: border-box;
+  outline: none; border:none;
+  text-transform: capitalize;
+  text-decoration: none;
+  transition: .2s linear;
+}
+
+.container .heading{
+  text-align: center;
+  padding:10px;
+  color:#333;
+  background: #e8807c;
+  font-size: 35px;
+  border-bottom: 3px solid black;
+}
+
+.container .box-container{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap:20px;
+  padding:20px 9%;
+  background: #e8807c;
+}
+
+.container .box-container.active{
+  padding-bottom: 150px;
+}
+
+.container .box-container .box{
+  border-radius: 10px;
+  background:#e8807c;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  padding:15px;
+  cursor: pointer;
+}
+
+.container .box-container .box .image{
+  height:540px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  position: relative;
+}
+
+.container .box-container .box .image img{
+  height:100%;
+  width:100%;
+  object-fit: cover;
+}
+
+.container .box-container .box .image .play{
+  position: absolute;
+  top:0; left:0;
+  height: 100%;
+  width:100%;
+  background: #d06d85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  display: none;
+}
+
+.container .box-container .box:hover .image .play{
+  display: flex;
+}
+
+.container .box-container .box .image .play i{
+  font-size: 100px;
+  color:#b14683;
+}
+
+.container .box-container .box .content{
+  padding-top: 15px;
+}
+
+.container .box-container .box .content h3{
+  font-size: 20px;
+  color:black;
+}
+
+.music-player{
+  position: fixed;
+  bottom: -125px; left:0; right:0;
+  background: #d06d85;
+  z-index: 1000;
+}
+
+.music-player.active{
+  bottom: 0;
+}
+
+.music-player .music-title{
+  font-size: 25px;
+  margin-bottom: 5px;
+  border-top: 3px solid #333;
+  border-bottom: 1px solid #333;
+  text-align: center;
+  color:#b14683;
+  padding:10px;
+}
+
+.music-player audio{
+  width: 100%;
+}
+
+.music-player audio::-webkit-media-controls-enclosure{
+  border-radius: 0;
+  background:#d06d85;
+}
+
+.music-player #close-player{
+  position: absolute;
+  top:-50px; right:5px;
+  height: 50px;
+  width: 55px;
+  line-height: 50px;
+  cursor: pointer;
+  font-size: 30px;
+  color:#ffc599
+  background: #d06d85;
+  border:3px solid #333;
+  border-bottom: none;
+  text-align: center;
+}
+
+@media (max-width:768px) {
+  .container .box-container{
+    padding:20px;
+  }
+}
+
+@media (max-width:450px) {
+  .container .box-container{
+    grid-template-columns: 1fr;
+  }
+
+  .container .box-container .box .image{
+    height: 300px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+:root {
+  --hue: 240;
+  --first-color: hsl(var(--hue), 16%, 18%);
+  --first-color-alt: hsl(var(--hue), 16%, 12%);
+  --title-color: hsl(var(--hue), 8%, 15%);
+  --text-color: hsl(var(--hue), 8%, 35%);
+  --body-color: hsl(var(--hue), 100%, 99%);
+  --container-color: #ffc599;
+  --body-font: 'Poppins', sans-serif;
+  --big-font-size: 1.5rem;
+  --normal-font-size: .938rem;
+  --z-modal: 1000;
+}
+@media screen and (min-width: 968px) {
+  :root {
+    --big-font-size: 1.75rem;
+    --normal-font-size: 1rem;
+  }
+}
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body,
+button{
+  font-family: var(--body-font);
+  font-size: var(--normal-font-size);
+}
+
+body{
+  background-color: #ffc9b0;
+  color: var(--text-color);
+  position: relative;
+}
+
+button{
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+img{
+  max-width: 100%;
+  height: auto;
+}
+.container{
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.modal{
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.modal__button{
+  display: inline-block;
+  background-color: var(--first-color);
+  color: #ffc9b0;
+  padding: 1rem 1.25rem;
+  border-radius: .5rem;
+  transition: .3s;
+}
+
+.modal__button:hover{
+  background-color: var(--first-color-alt);
+}
+.modal__container{
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: hsla(var(--hue), 18%, 75%, .8);
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-items: flex-end;
+  overflow: hidden;
+  transition: all .3s;
+  z-index: var(--z-modal);
+  visibility: hidden;
+  opacity: 0;
+}
+.modal__content{
+  position: relative;
+  background-color: var(--container-color);
+  text-align: center;
+  padding: 3rem 2rem 2rem;
+  border-radius: 1rem 1rem 0 0;
+  transition: all .3s;
+  transform: translateY(10%);
+}
+
+.modal__img{
+  width: 150px;
+  margin-bottom: .75rem;
+}
+
+.modal__close{
+  display: inline-flex;
+  background-color: var(--first-color);
+  border-radius: .25rem;
+  color: #ffc9b0;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  cursor: pointer;
+}
+.modal__title{
+  font-size: var(--big-font-size);
+  color: var(--title-color);
+  font-weight: 500;
+}
+
+.modal__description{
+  margin-bottom: 1.5rem;
+}
+
+.modal__button-width{
+  width: 90%;
+}
+.modal__button-link{
+  display: block;
+  margin: 1rem auto 0;
+  background-color: transparent;
+  color: var(--first-color);
+  font-weight: 500;
+}
+.show-modal{
+  visibility: visible;
+  opacity: 1;
+}
+.show-modal .modal__content{
+  transform: translateY(0);
+@media screen and (min-width: 576px){
+  .modal__content{
+    margin: auto;
+    width: 380px;
+    border-radius: 1.25rem;
+  }
+
+  .modal__img{
+    width: 170px;
+  }
+}
+
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body,
+button{
+    font-family: var(--body-font);
+    font-size: var(--normal-font-size);
+}
+
+body{
+    background-color: var(--body-color);
+    color: var(--text-color);
+    position: relative;
+}
+
+button{
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+img{
+    max-width: 100%;
+    height: auto;
+}
+@media screen and (min-width: 576px){
+    .modal{
+        &__content{
+            margin: auto;
+            width: 380px;
+            border-radius: 1.25rem;
+        }
+        &__img{
+            width: 170px;
+        }
+    }
+}
+.container{
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.modal{
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    
+    &__button{
+        display: inline-block;
+        background-color: var(--first-color);
+        color: #FFF;
+        padding: 1rem 1.25rem;
+        border-radius: .5rem;
+        transition: .3s;
+        
+        &:hover{
+            background-color: #ffc599;
+        }
+        
+    }
+    &__container{
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #ffc599;
+        width: 100%;
+        height: 100%;
+        display: grid;
+        align-items: flex-end;
+        overflow: hidden;
+        transition: all .3s;
+        z-index: var(--z-modal);
+        visibility: hidden;
+        opacity: 0;
+    }
+    &__content{
+        position: relative;
+        background-color: #ffc599;
+        text-align: center;
+        padding: 3rem 2rem 2rem;
+        border-radius: 1rem 1rem 0 0;
+        transition: all .3s;
+        transform: translateY(10%);
+    }
+    &__img{
+        width: 150px;
+        margin-bottom: .75rem;
+    }
+    &__close{
+        display: inline-flex;
+        background-color: #ffc599;
+        border-radius: .25rem;
+        color: #ffc599
+        font-size: 1.5rem;
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        cursor: pointer;
+    }
+    &__title{
+        font-size: var(--big-font-size);
+        color: #ffc599);
+        font-weight: 500;
+    }
+    &__description{
+        margin-bottom: 1.5rem;
+    }
+    &__button-width{
+        width: 90%;
+    }
+    &__button-link{
+        display: block;
+        margin: 1rem auto 0;
+        background-color: transparent;
+        color: #ffc599;
+        font-weight: 500;
+    }
+}
+.show-modal{
+    visibility: visible;
+    opacity: 1;
+}
+.show-modal .modal__content{
+    transform: translateY(0);
+}
+:root{
+    --hue: 240;
+    --first-color: hsl(var(--hue), 16%, 18%);
+    --first-color-alt: hsl(var(--hue), 16%, 12%);
+    --title-color: hsl(var(--hue), 8%, 15%);
+    --text-color: hsl(var(--hue), 8%, 35%);
+    --body-color: hsl(var(--hue), 100%, 99%);
+    --container-color: #ffc599;
+    --body-font: 'Poppins', sans-serif;
+    --big-font-size: 1.5rem;
+    --normal-font-size: .938rem;
+
+    @media screen and (min-width: 968px){
+        --big-font-size: 1.75rem;
+        --normal-font-size: 1rem;
+    }
+    --z-modal: 1000;
+}
+@import 'config/variables';
+@import 'base/base';
+@import 'components/modal';
+@import 'components/breakpoints';
+
+
+
+
+
+
+
+
+
+</style>
+
+</head>
+<body>
+    
+<div class="container">
+
+    <h1 class="heading"> Music </h1>
+
+    <div class="box-container">
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/04/audio_7943b7ead7.mp3?filename=foetal-meditation-for-sleep-amp-relaxation-22029.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/2217210/screenshots/13918303/media/f231343b90c2df77faebf972dc56c7e2.jpg?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Midnight Promises</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/07/audio_48408439d8.mp3?filename=mindfulness-relaxation-amp-meditation-music-22174.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/938871/screenshots/14119821/media/f25a09c904422f5d70855eec067e90a9.png?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Matter Of Time</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/09/audio_97e49df2bd.mp3?filename=freezing-night-28066.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/171864/screenshots/2697808/media/d33212e0d97d561fabe19aae1ec160ab.jpg?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Whatever Choices</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/02/12/audio_8ca49a7f20.mp3?filename=birds39-forest-20772.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/19849/screenshots/11401249/media/3387dd438c71a1f81749c0c0b4588f26.png?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Blue Feeling</h3>
+            </div>
+        </div>
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2021/08/23/audio_dfbee010eb.mp3?filename=autumn-sky-meditation-7618.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/2417352/screenshots/7285521/media/bb86a4c74c6aea2b82da8cf53aaa7cb5.png?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Matter Of Darkness</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/04/audio_7943b7ead7.mp3?filename=foetal-meditation-for-sleep-amp-relaxation-22029.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/466099/screenshots/9877613/media/145eabdf1f0caba2f228d05f7c9452ab.png?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Need Of Subtlety</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/18/audio_78a1a5eac5.mp3?filename=dunbarton-meditative-ambient-soundscape-for-learning-and-relaxing-95403.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/1731254/screenshots/14355595/media/769848867c81b41c6cab0a4ee2d74047.png?compress=1&resize=400x300&vertical=top" alt="">
+            </div>
+            <div class="content">
+                <h3>Kind Of My Heart</h3>
+            </div>
+        </div>
+
+        <div class="box" data-src="https://cdn.pixabay.com/download/audio/2022/03/04/audio_a63b64c6d1.mp3?filename=eternity-boundless-suspense-meditation-airy-dreamy-music-22006.mp3">
+            <div class="image">
+                <div class="play">
+                    <i class="fas fa-play"></i>
+                </div>
+                <img src="https://cdn.dribbble.com/users/730703/screenshots/8806141/media/5accb0756172f8c8760f8b76143285a4.jpg?compress=1&resize=400x300" alt="">
+            </div>
+            <div class="content">
+                <h3>Midnight Blues</h3>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<div class="music-player">
+    <div id="close-player" class="fas fa-angle-up"></div>
+    <h3 class="music-title">(play your song)</h3>
+    <audio src="" controls></audio>
+</div>
+
+                    </button>
+                </div>
+            </div>
+        </section>
+
+<script>
+    let closePlayer = document.querySelector('#close-player');
+let musicPlayer = document.querySelector('.music-player');
+let boxContainer = document.querySelector('.container .box-container');
+
+closePlayer.onclick = () =>{
+    closePlayer.classList.toggle('fa-times');
+    musicPlayer.classList.toggle('active');
+    boxContainer.classList.toggle('active');
+}
+
+let boxes = document.querySelectorAll('.container .box-container .box');
+
+boxes.forEach(box =>{
+
+    box.onclick = () =>{
+        let src = box.getAttribute('data-src');
+        let text = box.querySelector('.content h3').innerText;
+        closePlayer.classList.add('fa-times');
+        musicPlayer.classList.add('active');
+        boxContainer.classList.add('active');
+        musicPlayer.querySelector('h3').innerText = text;
+        musicPlayer.querySelector('audio').src = src;
+        musicPlayer.querySelector('audio').play();
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
+const showModal = (openButton, modalContent) =>{
+    const openBtn = document.getElementById(openButton),
+    modalContainer = document.getElementById(modalContent)
+    
+    if(openBtn && modalContainer){
+        openBtn.addEventListener('click', ()=>{
+            modalContainer.classList.add('show-modal')
+        })
+    }
+}
+showModal('open-modal','modal-container')
+const closeBtn = document.querySelectorAll('.close-modal')
+
+function closeModal(){
+    const modalContainer = document.getElementById('modal-container')
+    modalContainer.classList.remove('show-modal')
+}
+closeBtn.forEach(c => c.addEventListener('click', closeModal))
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
